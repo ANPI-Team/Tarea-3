@@ -1,29 +1,24 @@
 class way:
-    def simpson(self) -> (str, int):
+    def simpson(self, func, a, b) -> (str, float):
         pass
-    def trapecio(self) -> (str, int):
+    def trapecio(self, func, a, b) -> (str, float):
         pass
-    def boole(self) -> (str, int):
+    def boole(self, func, a, b) -> (str, float):
         pass
 
 class simple(way):
-    def simpson(self) -> (str, int):
-        return '',0
-    def trapecio(self) -> (str, int):
-        return '',0
-    def boole(self) -> (str, int):
-        return '',0
+    def simpson(self, func, a, b) -> (str, float):
+        return func,0.0
+    def trapecio(self, func, a, b) -> (str, float):
+        return func,0.0
+    def boole(self, func, a, b) -> (str, float):
+        return func,0.0
 
 class compuesto(way):
-    def __init__(self, a = 0, b = 0):
-        self.a = a
-        self.b = b
-    def simpson(self) -> (str, int):
-        return '',0
-    def trapecio(self) -> (str, int):
-        return '',0
-    def boole(self) -> (str, int):
-        return '',0
+    def simpson(self, func, a, b) -> (str, float):
+        return func,0.0
+    def trapecio(self, func, a, b) -> (str, float):
+        return func,0.0
+    def boole(self, func, a, b) -> (str, float):
+        return func,0.0
 
-value: way = simple()
-print (value.simpson())
