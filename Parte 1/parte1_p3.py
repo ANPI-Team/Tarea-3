@@ -1,6 +1,7 @@
 from tkinter import *
+from tkinter import ttk
 from enum import Enum
-import parte1_p2
+from parte1_p2 import compuesto, simple, way
 
 class TipoOperacion(Enum):
     SIMPLE = 1
@@ -25,7 +26,17 @@ def select_operation(operacion: TipoOperacion, metodo: Metodo, a: int, b: int, f
     elif(metodo == Metodo.BOOLE):
         return oper.boole(func, a, b)
 
-i, err = select_operation(TipoOperacion.COMPUESTO, Metodo.TRAPECIO,0,0,'func')
+def popupmsg(msg):
+    NORM_FONT = ("Helvetica", 10)
+    popup = Tk()
+    popup.wm_title("!")
+    label = ttk.Label(popup, text=msg, font=NORM_FONT)
+    label.pack(side="top", fill="x", pady=10)
+    B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
+    B1.pack()
+    popup.mainloop()
+
+i, err = select_operation(TipoOperacion.SIMPLE, Metodo.TRAPECIO,0,0,'func')
 print("i = " + i)
 print("err = " + str(err))
 
@@ -34,5 +45,4 @@ root.config(width=300, height=200)
 a = Label(root, text ="Calculadora de Integrales Definidas")
 a.pack() 
   
-root.mainloop() 
-
+root.mainloop()
