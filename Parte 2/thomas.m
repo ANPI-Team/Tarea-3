@@ -14,7 +14,7 @@ function y = thomas(A, d, N)
   % Obtenemos la solucion 
   y = zeros(1, N);
   y(N) = q(N);
-  for i=N-1:i
+  for i=N-1:-1:1
     y(i) = q(i)-p(i)*y(i+1); 
   endfor
   
