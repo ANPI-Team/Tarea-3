@@ -11,14 +11,23 @@ from sympy.abc import x
 from sympy.utilities.lambdify import lambdify, implemented_function
 
 # Manejo de errores
-
-
 class Error(Enum):
     DIG_FUNC = "Error tipo 1: Función mal digitada"
     CONT = "Error, funcion no continua en [a,b]. Por favor escoja otro intervalo."
     NUM = "Por favor ingresar numeros en los intervalos"
     EMPTY = "TODOS LOS VALORES ESTAN VACIOS AIUUUDA!"
     NOT_METHOD = "Por favor seleccione un Metodo"
+    AYUDA = """
+    Paso 1: Ingresar la funcion a integrar, debe ser escrita de la misma manera que en una calculadora, no debe ingresar números.
+    Paso 2: Ingresar los intervalos para realizar la integración, son valores numéricos. 
+    Paso 3: Si desea utilizar un método simple, no presione el botón de compuestos, si por el contrario quiere utilizarlos, debe presionarlo.
+    Paso 4: Seleccione el método que desea de la lista que aparece en la calculadora.
+    Paso 5: Si seleccionó métodos compuestos, ingrese el valor de puntos con los cuales realizar el cálculo.
+    Paso 6: Presione el botón Calcular.
+
+    Nota: en caso de que haya algún error le aparecerá un mensaje de error. 
+    """
+    PUNTOS_ENTEROS = "Favor ingrese una cantidad de puntos validos."
 
 
 def popupmsg(msg: Error):
@@ -30,7 +39,7 @@ def popupmsg(msg: Error):
     windowHeight = popup.winfo_reqheight()
 
     # Gets both half the screen width/height and window width/height
-    positionRight = int(popup.winfo_screenwidth()/2 - windowWidth/2) - 100
+    positionRight = int(popup.winfo_screenwidth()/2 - windowWidth/2) - 200
     positionDown = int(popup.winfo_screenheight()/2 - windowHeight/2)
 
     # Positions the window in the center of the page.
@@ -45,12 +54,18 @@ def popupmsg(msg: Error):
 
 
 def continua(func: str, a: int, b: int) -> bool:
-    x = Symbol("x")
-    value = continuous_domain(parse_expr(func), x, Interval(a, b))
-    if(not isinstance(value, Interval)):
-        popupmsg(Error.CONT)
-        return False
-    return True
+
+        x = Symbol("x")
+
+        value = continuous_domain(parse_expr(func), x, Interval(a, b))
+
+        if((not isinstance(value, Interval)) or (value.start != a) or (value.end != b or (value.right_open) or (value.left_open))):
+            popupmsg(Error.CONT)
+            return False
+        return True
+
+        
+
 
 # conexión con métodos
 
@@ -94,7 +109,10 @@ def select_operation(operacion: TipoOperacion, metodo: Metodo, a: int, b: int, f
     elif(metodo == Metodo.TRAPECIO):
         return oper.trapecio(func, a, b, puntos)
     elif(metodo == Metodo.BOOLE_O_GAUSSIANA):
-        return oper.boole(func, a, b, puntos)
+        if(oper == TipoOperacion.COMPUESTO):
+            return oper.cuadraturasGaussianas(func, a, b, puntos)
+        else:
+            return oper.boole(func, a, b, puntos)
 
 def titulo_operacion():
     global oper
@@ -140,6 +158,8 @@ def cambiar_operacion():
     
     interfaz_operacion()
 
+def ayuda():
+    popupmsg(Error.AYUDA)
 
 def prueba():
     global funcion
@@ -163,9 +183,9 @@ def prueba():
     try:
         if(ing_puntos['state'] != 'disabled'):
             puntos = int(ing_puntos.get())
-
+         
     except:
-        print("ERROR DE PUNTOS")
+        popupmsg(Error.PUNTOS_ENTEROS)
 
     try:
         f = lambdify(x, funcion)
@@ -178,17 +198,9 @@ def prueba():
             if(continua(funcion, inter_a, inter_b)):
                 integral, err = select_operation(
                     oper, metodo, inter_a, inter_b, funcion, puntos)
-                # QUITAR ESTOS PRINTS
-                print("a:",inter_a)
-                print("b:",inter_b)
-                print(oper)
-                print(metodo)
-                # DEBE MOSTRAR ESTOS VALORES
 
                 result_label['text'] = "Aproximación :" + str(integral)
                 error_label['text'] = "Error :" + str(err)
-
-                print(integral, err)
 
         else:
             print("Error en b")
@@ -273,6 +285,10 @@ cambiar_operacion()
 bcalcular = tkinter.Button(ventana, text="Calcular",
                            padx=30, pady=10, command=prueba)
 bcalcular.place(x=200, y=700)
+
+bayuda = tkinter.Button(ventana, text="Ayuda",
+                           padx=30, pady=10, command = ayuda)
+bayuda.place(x=380, y=5)
 
 result_label = Label(ventana, text = "Aproximación :" + str(0.0), font = "40")
 result_label.place(x = 135, y = 450)

@@ -4,15 +4,17 @@ x = Symbol('x')
 
 
 class way:
-    def simpson(self, func, a, b, puntos) -> (str, float):
+    def simpson(self, f, a, b, N) -> (float, float):
         pass
-    def trapecio(self, func, a, b, puntos) -> (str, float):
+    def trapecio(self, f, a, b, N) -> (float, float):
         pass
-    def boole(self, func, a, b, puntos) -> (str, float):
+    def boole(self, f, a, b, N) -> (float, float):
+        pass
+    def cuadraturasGaussianas(self, f, a, b, N) -> (float, float):
         pass
 
 class simple(way):
-    def simpson(self, func, a, b, puntos = 0) -> (float, float):
+    def simpson(self, f, a, b, N = 0) -> (float, float):
         '''
         Recibe como parámetro una función f en forma de string
         En caso de necesitar funciones específicas (como sin, cos)
@@ -35,7 +37,7 @@ class simple(way):
             error = e.evalf()
         return aprox, error
 
-    def trapecio(self, func, a, b, puntos = 0) -> (float, float):
+    def trapecio(self, f, a, b, N = 0) -> (float, float):
         '''
         Recibe como parámetro una función f en forma de string
         En caso de necesitar funciones específicas (como sin, cos)
@@ -57,9 +59,9 @@ class simple(way):
 
         return aprox, error
 
-    def boole(self, func, a, b, puntos = 0) -> (str, float):
+    def boole(self, f, a, b, N = 0) -> (float, float):
         h = (b - a)/4
-        f = lambdify(x, func)
+        f = lambdify(x, f)
 
         y = [0, 0, 0, 0, 0]
         for n in range(len(y)):
@@ -68,10 +70,10 @@ class simple(way):
         
             
         value = 2 * h / 45 * (7 * y[0] + 32 * y[1] + 12 * y[2] + 32 * y[3] + 7 * y[4])
-        return str(value),0.0
+        return float(value),0.0
 
 class compuesto(way):
-    def simpson(self, func, a, b, puntos) -> (float, float):
+    def simpson(self, f: str, a, b, N) -> (float, float):
         '''
         Recibe como parámetro una función f en forma de string,
         los valores "a" y "b" del intervalo donde se desea integrar
@@ -117,7 +119,7 @@ class compuesto(way):
 
         return aprox, error
 
-    def trapecio(self, func, a, b, puntos) -> (int, float):
+    def trapecio(self, f, a, b, N) -> (int, float):
         '''
         Recibe como parámetro una función f en forma de string
         En caso de necesitar funciones específicas (como sin, cos)
@@ -150,9 +152,9 @@ class compuesto(way):
 
         return aprox, error
 
-    def cuadraturasGaussianas(self, func, a, b, puntos) -> (float, float):
-        return func,0.0
+    def cuadraturasGaussianas(self, f, a, b, N) -> (float, float):
+        return f,0.0
 
 
-cosa = simple()
-print(cosa.boole("cos(x)", -1, 1))
+cosa = compuesto()
+print(cosa.simpson("ln(x)", 2, 5,7))
