@@ -47,14 +47,12 @@ class simple(way):
         result = ((h/2)*(fun.subs(x, a)+fun.subs(x, b)))
         aprox = result.evalf()
         second_deriv = diff(fun, x, x)
-
         if(second_deriv.subs(x, a) > second_deriv.subs(x, b)):
             e = (h**3/12)*abs(diff(fun, x, x).subs(x, b))
             error = e.evalf()
         else:
             e = (h**3/12)*abs(diff(fun, x, x).subs(x, a))
             error = e.evalf()
-
         return aprox, error
 
     def boole(self, f, a, b, N = 0) -> (str, float):
@@ -62,7 +60,7 @@ class simple(way):
         Recibe como parámetro una función f en forma de string
         En caso de necesitar funciones específicas (como sin, cos)
         debe usar las propias de sympy, por ejemplo, e^x = exp(x) 
-        Caso de ejemplo: boole("exp(2*x)+2",1,2)
+        Caso de ejemplo: Boole("exp(2*x)+2",1,2)
         '''
         fun = sympify(f)
         xVector = []
@@ -77,7 +75,6 @@ class simple(way):
         fourth = (32*fun.subs(x,xVector[3]))
         fifth = (7*fun.subs(x,xVector[4]))
         aprox = ((2*h)/(45))*(first+second+third+fourth+fifth)
-
         sixth_deriv = diff(fun, x,x,x,x,x,x)
 
         if(sixth_deriv.subs(x, a) > sixth_deriv.subs(x, b)):
@@ -114,9 +111,11 @@ class compuesto(way):
         for i in range(1, N-1):
             pair = (i % 2 == 0)
             if(pair):
+
                 pairAprox = pairAprox + fun.subs(x, xVector[i])
 
             else:
+
                 impairAprox = impairAprox + fun.subs(x, xVector[i])
 
         aprox = (h/3)*((fun.subs(x, xVector[0]))+2 *
@@ -147,15 +146,16 @@ class compuesto(way):
         h = (b-a)/(N-1)
 
         xVector = []
-        xVector.append(a)
+        
         aprox = 0
-        for i in range(1, N):
-            xVector.append(a+i*h)
-
+        
+        for i in range(0, N):
+            xVector.append(a+(i*h))
+    
         for i in range(0, N-1):
             aprox = aprox + (fun.subs(x, xVector[i])+fun.subs(x, xVector[i+1]))
 
-        aprox = 0.5*aprox.evalf()
+        aprox = (h/2)*aprox.evalf()
 
         second_deriv = diff(fun, x, x)
         if(second_deriv.subs(x, a) > second_deriv.subs(x, b)):
@@ -176,7 +176,7 @@ class compuesto(way):
         En caso de necesitar funciones específicas (como sin, cos)
         debe usar las propias de sympy, por ejemplo, e^x = exp(x) 
         Caso de ejemplo: cuadraturasGaussianas("exp(2*x)+2",1,2,5)
-        '''
+    '''
         fun = sympify(f)
         tmpFun = sympify("(x**2)-1")
         tmpFun = tmpFun**N
@@ -190,7 +190,7 @@ class compuesto(way):
         xi = solve(Pn)
         xi = sorted(xi)
         Pi = diff(Pn,x)
-       
+        #print(xi)
         for i in range(0, N):
             tmpW = 2/((1-((xi[i])**2))*((Pi.subs(x,xi[i]))**2))
             wVector.append(tmpW)
@@ -210,7 +210,7 @@ class compuesto(way):
         else:
             e = abs(diff(fun, x, x,x,x).subs(x, a))/135
             error = e.evalf()
-        return (aprox, error)
+        return aprox, error
 
 
 cosa = simple()
