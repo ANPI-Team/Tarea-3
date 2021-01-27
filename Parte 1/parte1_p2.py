@@ -4,13 +4,11 @@ x = Symbol('x')
 
 
 class way:
-    def simpson(self, f, a, b, N) -> (float, float):
+    def simpson(self, f, a, b, N) -> (str, float):
         pass
-    def trapecio(self, f, a, b, N) -> (float, float):
+    def trapecio(self, f, a, b, N) -> (str, float):
         pass
-    def boole(self, f, a, b, N) -> (float, float):
-        pass
-    def cuadraturasGaussianas(self, f, a, b, N) -> (float, float):
+    def boole(self, f, a, b, N) -> (str, float):
         pass
 
 class simple(way):
@@ -19,7 +17,7 @@ class simple(way):
         Recibe como parámetro una función f en forma de string
         En caso de necesitar funciones específicas (como sin, cos)
         debe usar las propias de sympy, por ejemplo, e^x = exp(x) 
-        Caso de ejemplo: Simpson("exp(2*x)+2",1,2)
+        Caso de ejemplo: simpson("exp(2*x)+2",1,2)
         '''
         fun = sympify(f)
         h = (b-a)/2
@@ -59,21 +57,40 @@ class simple(way):
 
         return aprox, error
 
-    def boole(self, f, a, b, N = 0) -> (float, float):
-        h = (b - a)/4
-        f = lambdify(x, f)
+    def boole(self, f, a, b, N = 0) -> (str, float):
+        '''
+        Recibe como parámetro una función f en forma de string
+        En caso de necesitar funciones específicas (como sin, cos)
+        debe usar las propias de sympy, por ejemplo, e^x = exp(x) 
+        Caso de ejemplo: boole("exp(2*x)+2",1,2)
+        '''
+        fun = sympify(f)
+        xVector = []
+        h = (b-a)/4
+        for i in range(0,5):
+            xTemp = a+(i*h)
+            xVector.append(xTemp)
 
-        y = [0, 0, 0, 0, 0]
-        for n in range(len(y)):
-            xs = a + n * h
-            y[n] = f(xs)
-        
-            
-        value = 2 * h / 45 * (7 * y[0] + 32 * y[1] + 12 * y[2] + 32 * y[3] + 7 * y[4])
-        return float(value),0.0
+        first = (7*fun.subs(x,xVector[0]))
+        second = (32*fun.subs(x,xVector[1]))
+        third = (12*fun.subs(x,xVector[2]))
+        fourth = (32*fun.subs(x,xVector[3]))
+        fifth = (7*fun.subs(x,xVector[4]))
+        aprox = ((2*h)/(45))*(first+second+third+fourth+fifth)
+
+        sixth_deriv = diff(fun, x,x,x,x,x,x)
+
+        if(sixth_deriv.subs(x, a) > sixth_deriv.subs(x, b)):
+            e = -((b-a)**7/1935360)*abs(diff(fun, x,x,x,x,x,x).subs(x, b))
+            error = e.evalf()
+        else:
+            e = -((b-a)**7/1935360)*abs(diff(fun, x,x,x,x,x,x).subs(x, a))
+            error = e.evalf()
+
+        return aprox, error
 
 class compuesto(way):
-    def simpson(self, f: str, a, b, N) -> (float, float):
+    def simpson(self, f, a, b, N) -> (float, float):
         '''
         Recibe como parámetro una función f en forma de string,
         los valores "a" y "b" del intervalo donde se desea integrar
@@ -97,36 +114,35 @@ class compuesto(way):
         for i in range(1, N-1):
             pair = (i % 2 == 0)
             if(pair):
-                print("is pair")
                 pairAprox = pairAprox + fun.subs(x, xVector[i])
 
             else:
-                print("is impair")
                 impairAprox = impairAprox + fun.subs(x, xVector[i])
 
         aprox = (h/3)*((fun.subs(x, xVector[0]))+2 *
                     (pairAprox)+4*(impairAprox)+fun.subs(x, b))
         aprox = aprox.evalf()
 
-        second_deriv = diff(fun, x, x)
-        if(second_deriv.subs(x, a) > second_deriv.subs(x, b)):
-            e = (((b-a)*(h**2))/12)*abs(diff(fun, x, x).subs(x, b))
+        fourth_deriv = diff(fun, x, x,x,x)
+        if(fourth_deriv.subs(x, a) > fourth_deriv.subs(x, b)):
+            e = (((b-a)*(h**4))/180)*abs(diff(fun, x, x,x,x).subs(x, b))
             error = e.evalf()
 
         else:
-            e = (((b-a)*(h**2))/12)*abs(diff(fun, x, x).subs(x, a))
+            e = (((b-a)*(h**4))/180)*abs(diff(fun, x, x,x,x).subs(x, a))
             error = e.evalf()
 
         return aprox, error
 
     def trapecio(self, f, a, b, N) -> (int, float):
         '''
-        Recibe como parámetro una función f en forma de string
+        Recibe como parámetro una función f en forma de string,
+        los valores "a" y "b" del intervalo donde se desea integrar
+        asi como la cantidad de puntos necesaria para la aproximacion.
         En caso de necesitar funciones específicas (como sin, cos)
         debe usar las propias de sympy, por ejemplo, e^x = exp(x) 
-        Caso de ejemplo: Simpson("exp(2*x)+2",1,2)
+        Caso de ejemplo: trapecioCompuesto("exp(2*x)+2",1,2,5)
         '''
-
         fun = sympify(f)
         h = (b-a)/(N-1)
 
@@ -153,8 +169,49 @@ class compuesto(way):
         return aprox, error
 
     def cuadraturasGaussianas(self, f, a, b, N) -> (float, float):
-        return f,0.0
+        '''
+        Recibe como parámetro una función f en forma de string,
+        los valores "a" y "b" del intervalo donde se desea integrar
+        asi como el orden del polinomio a utilizar (Pn).
+        En caso de necesitar funciones específicas (como sin, cos)
+        debe usar las propias de sympy, por ejemplo, e^x = exp(x) 
+        Caso de ejemplo: cuadraturasGaussianas("exp(2*x)+2",1,2,5)
+        '''
+        fun = sympify(f)
+        tmpFun = sympify("(x**2)-1")
+        tmpFun = tmpFun**N
+        aprox = 0
+        wVector = []
+        Pn = (diff(tmpFun, x, N))
+    
+        
+        Pn = (1/(factorial(N)*2**(N))*Pn)
+        
+        xi = solve(Pn)
+        xi = sorted(xi)
+        Pi = diff(Pn,x)
+       
+        for i in range(0, N):
+            tmpW = 2/((1-((xi[i])**2))*((Pi.subs(x,xi[i]))**2))
+            wVector.append(tmpW)
+
+        for i in range(0, N):
+            
+            tmpXi = (((b-a)/2)*xi[i].evalf())+((a+b)/2)
+            aprox = aprox + (wVector[i]* fun.subs(x,tmpXi))
+        
+        aprox = ((b-a)/2) *aprox.evalf()
+        
+        fourth_deriv = diff(fun, x, x,x,x)
+        if(fourth_deriv.subs(x, a) > fourth_deriv.subs(x, b)):
+            e = abs(diff(fun, x, x,x,x).subs(x, b))/135
+            error = e.evalf()
+
+        else:
+            e = abs(diff(fun, x, x,x,x).subs(x, a))/135
+            error = e.evalf()
+        return (aprox, error)
 
 
-cosa = compuesto()
-print(cosa.simpson("ln(x)", 2, 5,7))
+cosa = simple()
+print(cosa.boole("ln(x)", 2, 5,0))
