@@ -4,7 +4,16 @@ function funs = parte2_p1
   funs.thomas = @thomas;
   
 end
-
+%%    Vectores X, Y resultantes
+%%
+%%    parametros:
+%%    -p,q,f: Funciones iniciales.
+%%    -N: Número de puntos
+%%    -a,b: Intervalo a analizar
+%%    -y0,yn: Valor iniciales
+%%    
+%%    Llamado en consola:
+%%    edo2()
 function [x, y] = edo2(p, q, f, N, a, b, y0, yn)
     
     % Calculamos h
