@@ -40,6 +40,17 @@ function funs = parte2_p2
  
 endfunction
 
+%%    Polinomio simbólico P resultante
+%%
+%%    Este método obtiene el polinomio de interpolación dados los puntos X y Y 
+%%    por medio del método de Lagrange 
+%%
+%%    Parametros:
+%%    -x:     Vector de puntos en x
+%%    -y:     Vector de puntos en y
+%%    
+%%    Llamado en consola:
+%%    lagrangeP(x, y)
 function p = lagrangeP(x, y)
   % Calculamos el polinomio de interpolacion
   syms xsym;
@@ -59,6 +70,18 @@ function p = lagrangeP(x, y)
   endfor
 endfunction
 
+%%    Valor numérico 'error' resultante
+%%
+%%    Este método obtiene el promedio del error relativo del polinomio de interpolación
+%%    a partir de los puntos en Y originales y los calculados con la aproximación 
+%%    del polinomio. 
+%%
+%%    Parametros:
+%%    -yOriginal:     vector original de puntos 
+%%    -yAproximado:   vector de puntos aproximados con el polinomio 
+%%    
+%%    Llamado en consola:
+%%    errorLagrange(yOriginal, yAproximado)
 function error = errorLagrange(yOriginal, yAproximado)
   
   % Calculamos el promedio del error relativo de los puntos

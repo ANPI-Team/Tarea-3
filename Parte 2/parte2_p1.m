@@ -4,16 +4,21 @@ function funs = parte2_p1
   funs.thomas = @thomas;
   
 end
+
 %%    Vectores X, Y resultantes
 %%
-%%    parametros:
-%%    -p,q,f: Funciones iniciales.
-%%    -N: Número de puntos
-%%    -a,b: Intervalo a analizar
+%%    Este método obtiene los puntos en 'y' de un intervalo a partir de una 
+%%    función dada por una ecuacion diferencial por medio del método de 
+%%    diferencias finitas. 
+%%
+%%    Parametros:
+%%    -p,q,f: Funciones de la ecuacion diferencial
+%%    -N:     Número de puntos
+%%    -a,b:   Intervalo a evaluar
 %%    -y0,yn: Valor iniciales
 %%    
 %%    Llamado en consola:
-%%    edo2()
+%%    edo2(p, q, f, N, a, b, y0, yn)
 function [x, y] = edo2(p, q, f, N, a, b, y0, yn)
     
     % Calculamos h
@@ -62,6 +67,18 @@ function [x, y] = edo2(p, q, f, N, a, b, y0, yn)
     
 endfunction
 
+%%    Vectores Y resultante
+%%
+%%    Este método resuelve un sistema de ecuaciones lineal por medio del método 
+%%    Thomas.
+%%
+%%    Parametros:
+%%    -A:     Matriz principal 
+%%    -d:     Vector solucion
+%%    -N:     Tamaño de la matriz 
+%%    
+%%    Llamado en consola:
+%%    thomas(A, d, N)
 function y = thomas(A, d, N)
   
   % Construimos vectores p y q 
