@@ -17,7 +17,7 @@ class simple(way):
         Recibe como parámetro una función f en forma de string
         En caso de necesitar funciones específicas (como sin, cos)
         debe usar las propias de sympy, por ejemplo, e^x = exp(x) 
-        Caso de ejemplo: Simpson("exp(2*x)+2",1,2)
+        Caso de ejemplo: simpson("exp(2*x)+2",1,2)
         '''
         fun = sympify(f)
         h = (b-a)/2
@@ -62,7 +62,7 @@ class simple(way):
         Recibe como parámetro una función f en forma de string
         En caso de necesitar funciones específicas (como sin, cos)
         debe usar las propias de sympy, por ejemplo, e^x = exp(x) 
-        Caso de ejemplo: Boole("exp(2*x)+2",1,2)
+        Caso de ejemplo: boole("exp(2*x)+2",1,2)
         '''
         fun = sympify(f)
         xVector = []
@@ -136,12 +136,13 @@ class compuesto(way):
 
     def trapecio(self, f, a, b, N) -> (int, float):
         '''
-        Recibe como parámetro una función f en forma de string
+        Recibe como parámetro una función f en forma de string,
+        los valores "a" y "b" del intervalo donde se desea integrar
+        asi como la cantidad de puntos necesaria para la aproximacion.
         En caso de necesitar funciones específicas (como sin, cos)
         debe usar las propias de sympy, por ejemplo, e^x = exp(x) 
-        Caso de ejemplo: Simpson("exp(2*x)+2",1,2)
+        Caso de ejemplo: simpsonCompuesto("exp(2*x)+2",1,2,5)
         '''
-
         fun = sympify(f)
         h = (b-a)/(N-1)
 
@@ -168,6 +169,14 @@ class compuesto(way):
         return aprox, error
 
     def cuadraturasGaussianas(self, f, a, b, N) -> (float, float):
+        '''
+        Recibe como parámetro una función f en forma de string,
+        los valores "a" y "b" del intervalo donde se desea integrar
+        asi como el orden del polinomio a utilizar (Pn).
+        En caso de necesitar funciones específicas (como sin, cos)
+        debe usar las propias de sympy, por ejemplo, e^x = exp(x) 
+        Caso de ejemplo: cuadraturasGaussianas("exp(2*x)+2",1,2,5)
+        '''
         fun = sympify(f)
         tmpFun = sympify("(x**2)-1")
         tmpFun = tmpFun**N
